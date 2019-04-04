@@ -66,7 +66,11 @@ class MyWindow(QMainWindow):
                 try:
                     cell_value = self.tbl_rng.item(row, col)
                     tmp = float(cell_value.text()) if cell_value else 0.0
+<<<<<<< HEAD
+                    assert(tmp >= 0.0)
+=======
                     assert(tmp >= 0.0 and tmp <= 1.0)
+>>>>>>> d3b7c0f37353f0e3d489d25f41af6fac0183cc6a
                     entered_numbers[row].append(tmp)
                 except:
                     self.show_error_message()
@@ -75,7 +79,11 @@ class MyWindow(QMainWindow):
         mean_time_probability = calc(entered_numbers)
 
         for row  in range(self.MATRIX_DIMENSION):
+<<<<<<< HEAD
+            value = str(round(mean_time_probability[row], 3))
+=======
             value= str(round(mean_time_probability[row], 3))
+>>>>>>> d3b7c0f37353f0e3d489d25f41af6fac0183cc6a
             self.tbl_rng.setItem(row,4, QTableWidgetItem(value))
 
 

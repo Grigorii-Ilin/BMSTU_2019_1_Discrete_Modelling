@@ -1,9 +1,11 @@
+M_DIMENSION = 4
+
 
 def get_stddev(diff):
     mean = sum(diff) / len(diff)
 
     sqr_i_minus_mean = []
-    for i in range(len(diff)):
+    for i in range(M_DIMENSION):
         tmp = (diff[i] - mean) ** 2
         sqr_i_minus_mean.append(tmp)
 
@@ -11,22 +13,39 @@ def get_stddev(diff):
     return dispersion ** 0.5
 
 
-def calc(matrix):
-    vektorOld = [0.0 for i in range(len(matrix))]
-    vektorOld[0]=1.0
+def normalize_matrix(m):
+    coefs = [0.0 for i in range(M_DIMENSION)]
+    for col in range(M_DIMENSION):
+        col_sum = 0
+        for row in range(M_DIMENSION):
+            col_sum+=m[row][col] 
+        coefs[col] = 1 / col_sum
 
-    diff_btw_old_and_new_vektor = [0.0 for i in range(len(matrix))]
+    for row in range(M_DIMENSION):
+        for col in range(M_DIMENSION):
+            m[row][col]*=coefs[col]
+            m[row][col] = 1 - m[row][col] #probability to go out from position
+
+    return m
+
+
+def calc(matrix):
+    matrix = normalize_matrix(matrix)
+    vektor_old = [1 / M_DIMENSION for i in range(M_DIMENSION)]
+    diff_btw_old_and_new_vektor = [0.0 for i in range(M_DIMENSION)]
  
     for iter in range(30):
-        vektorNew = [0.0 for i in range(len(matrix))]
+        vektor_new = [0.0 for i in range(M_DIMENSION)]
 
-        for row  in range(len(matrix)):
-            for col  in range(len(matrix)):
-                vektorNew[col]+=  matrix[row][col] * vektorOld[row]
-            diff_btw_old_and_new_vektor[row] = vektorNew[row] - vektorOld[row]
+        for row  in range(M_DIMENSION):
+            for col  in range(M_DIMENSION):
+                vektor_new[row]+=  matrix[row][col] * vektor_old[row]
+            diff_btw_old_and_new_vektor[row] = vektor_new[row] - vektor_old[row]
 
-        stddev = get_stddev(diff_btw_old_and_new_vektor)
-        print(iter, stddev)
-        vektorOld = vektorNew
+        #we may not use it
+        #stddev = get_stddev(diff_btw_old_and_new_vektor)
 
-    return vektorNew
+        vektor_old = vektor_new
+
+    normalized_vector = [1 / sum(vektor_new) * x for x in vektor_new]
+    return normalized_vector
