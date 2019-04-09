@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "queue_time_and_event_modelling", "queue_time_and_event_modelling.pyproj", "{280DBA84-D7BD-4408-9AB1-0E54C72956AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{280DBA84-D7BD-4408-9AB1-0E54C72956AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280DBA84-D7BD-4408-9AB1-0E54C72956AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {51C18682-1929-43D5-80B4-635513D658FA}
+	EndGlobalSection
+EndGlobal
