@@ -8,9 +8,7 @@ def get_uniform_rng(a, b):
 def get_exponential_rng(lmbd):
     lmbd_part = -(1 / lmbd)
     log_part = math.log(1 - random.uniform(0,1))
-
     result = lmbd_part * log_part
-    #print(result)
     return result
 
 def get_0_1_rng():
