@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>edc2d9dd-c75c-41d1-b803-fa76adf16ede</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>mfc.py</StartupFile>
+    <StartupFile>gui.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="gui.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="mfc.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

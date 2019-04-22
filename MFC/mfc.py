@@ -1,5 +1,5 @@
 import random
-from pprint import pprint
+#from pprint import pprint
 
 
 DELTA_T = 0.01
@@ -61,14 +61,6 @@ class Specialist(UnitAbstract):
     def is_free(self):
         return self.working_time <= 0.0
 
-        #if self.working_time>0.0:
-        #    return False
-
-        #if self.cpu.working_time>0 or self.cpu.queue_len>=2:
-        #    return False
-
-        #return True
-
     def append_ppl(self):
         self.set_work_time()
         self.t_i.append(self.working_time)
@@ -84,11 +76,10 @@ class Cpu(UnitAbstract):
             self.set_work_time()
 
         self.queue_len+=1
-        #self.t_i.append(0.0)
         self.t_i.insert(0, 0.0)
 
     def del_doc_from_work(self):
-        cpu.queue_len-=1
+        self.queue_len-=1
 
         if self.queue_len >= 1:
             self.set_work_time()
@@ -97,8 +88,6 @@ class Cpu(UnitAbstract):
         for i in range(self.queue_len):
             self.t_i[i]+=DELTA_T
 
-            #index=len(self.t_i)-i-1
-            #self.t_i[index]+=DELTA_T
 
 def get_cpus():
     cpus = []
@@ -111,7 +100,6 @@ def get_specialists(cpus):
     specs.append(Specialist(20.0,5.0, cpus[0]))
     specs.append(Specialist(40.0,10.0, cpus[0]))
     specs.append(Specialist(40.0,20.0, cpus[1]))
-    #specs.sort(key=lambda x: x.left_border + x.cpu.left_border)
     specs.sort(key=lambda x: x.right_border)  
     return specs
 
@@ -129,70 +117,83 @@ def is_modelling_done(ppl_gen, specs, cpus):
 
     return True
 
-def print_result(ppl_gen, specs, cpus):
-    print('ppl_gen')
-    print(ppl_gen.go_away/ppl_gen.ALL)
+#def print_result(ppl_gen, specs, cpus):
+#    print('ppl_gen')
+#    print(ppl_gen.go_away/ppl_gen.ALL)
 
+#    for spec in specs:
+#        print('spec')
+#        if spec.t_i == []:
+#            continue
+#        pprint(spec.t_i)
+#        print(sum(spec.t_i) / len(spec.t_i))
+
+#    for cpu in cpus:
+#        print('cpu')
+#        if cpu.t_i == []:
+#            continue
+#        pprint(cpu.t_i)
+#        print(sum(cpu.t_i) / len(cpu.t_i))
+
+def get_result(ppl_gen, specs, cpus):
+    result={}
+    result['ppl']=[ppl_gen.ALL, ppl_gen.go_away, ppl_gen.go_away/ppl_gen.ALL]
+
+    result['spec']=[]
     for spec in specs:
-        print('spec')
         if spec.t_i == []:
             continue
-        pprint(spec.t_i)
-        print(sum(spec.t_i) / len(spec.t_i))
+        result['spec'].append(sum(spec.t_i) / len(spec.t_i))
 
+    result['cpu']=[]
     for cpu in cpus:
-        print('cpu')
         if cpu.t_i == []:
             continue
-        pprint(cpu.t_i)
-        print(sum(cpu.t_i) / len(cpu.t_i))
+        result['cpu'].append(sum(cpu.t_i) / len(cpu.t_i))
 
+    return result
 
-ppl_gen = People_generator()
-cpus=get_cpus()
-specs=get_specialists(cpus)
+def calc():
+    ppl_gen = People_generator()
+    cpus=get_cpus()
+    specs=get_specialists(cpus)
 
-all_units = []
-all_units.append(ppl_gen)
-all_units.extend(specs)
-all_units.extend(cpus)
+    all_units = []
+    all_units.append(ppl_gen)
+    all_units.extend(specs)
+    all_units.extend(cpus)
 
-time_left = 0.0
+    time_left = 0.0
 
-#print(time_left, ppl_gen.come)
+    while not(is_modelling_done(ppl_gen, specs, cpus)):
+        for unit in all_units:
+            unit.dec_work_time_and_get_is_action()
 
-while not(is_modelling_done(ppl_gen, specs, cpus)):
-    for unit in all_units:
-        unit.dec_work_time_and_get_is_action()
-
-    for cpu in cpus:
-        cpu.add_dt_to_active_t_i()
+        for cpu in cpus:
+            cpu.add_dt_to_active_t_i()
     
-    time_left+=DELTA_T
+        time_left+=DELTA_T
 
-    if ppl_gen.is_action:
-        ppl_gen.new_ppl()
-        #print(time_left, ppl_gen.come, ppl_gen.go_away)
+        if ppl_gen.is_action:
+            ppl_gen.new_ppl()
+
+            for spec in specs:
+                if spec.is_free():
+                    spec.append_ppl()
+                    break
+            else:
+                ppl_gen.inc_go_away()
 
         for spec in specs:
-            if spec.is_free():
-                spec.append_ppl()
-                #spec.set_work_time()
-                break
-        else:
-            #ppl_gen.go_away+=1
-            ppl_gen.inc_go_away()
+            if spec.is_action:
+                spec.cpu.add_doc_to_work()
 
-    for spec in specs:
-        if spec.is_action:
-            spec.cpu.add_doc_to_work()
+        for cpu in cpus:
+            if cpu.is_action:
+                cpu.del_doc_from_work()
 
-    for cpu in cpus:
-        if cpu.is_action:
-            cpu.del_doc_from_work()
-            #cpu.queue_len-=1
+    return get_result(ppl_gen, specs, cpus)
+    #    if round(time_left * 100) % 100 == 0:        
+    #        print(time_left, ppl_gen.come, ppl_gen.go_away)
 
-    if round(time_left * 100) % 100 == 0:        
-        print(time_left, ppl_gen.come, ppl_gen.go_away)
-
-print_result(ppl_gen, specs, cpus)
+    #print_result(ppl_gen, specs, cpus)
